@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pacee1.item.mapper.ItemsMapperCustom" >
+
+  <select id="queryItemComments" resultType="com.pacee1.item.pojo.vo.ItemCommentVO">
+    SELECT
+        ic.comment_level AS commentLevel,
+        ic.content AS content,
+        ic.spec_name AS specName,
+        ic.created_time AS createdTime,
+        u.face AS userFace,
+        u.nickname AS nickname
+    FROM
+        items_comments ic
+    LEFT JOIN users u ON ic.user_id = u.id
+    WHERE
+        ic.item_id = #{itemId}
+        <if test="level != null">
+          AND ic.comment_level = #{level}
+        </if>
+  </select>
+<!--
+    <select id="searchItems" resultType="com.pacee1.item.pojo.vo.SearchItemsVO">
+        SELECT
+            i.id AS itemId,
+            i.item_name AS itemName,
+            i.sell_counts AS sellCounts,
+            ii.url AS imgUrl,
+            temp.price_discount AS price
+        FROM
+            items i
+        LEFT JOIN items_img ii ON i.id = ii.item_id
+        LEFT JOIN (
+            SELECT
+                item_id,
+                MIN(price_discount) AS price_discount
+            FROM
+                items_spec
+            GROUP BY
+                item_id
+        ) temp ON i.id = temp.item_id
+        WHERE
+            ii.is_main = 1
+        <if test="keyword != null">
+            AND i.item_name LIKE '%${keyword}%'
+        </if>
+        ORDER BY
+        <choose>
+            <when test="sort == &quot;c&quot;">
+                i.sell_counts desc
+            </when>
+            <when test="sort == &quot;p&quot;">
+                temp.price_discount asc
+            </when>
+            <otherwise>
+                i.item_name asc
+            </otherwise>
+        </choose>
+
+    </select>
+    &lt;!&ndash; c代表销量排序，p代表价格排序，默认使用名称排序   &ndash;&gt;
+
+    <select id="searchItemsByCat" resultType="com.pacee1.item.pojo.vo.SearchItemsVO">
+        SELECT
+        i.id AS itemId,
+        i.item_name AS itemName,
+        i.sell_counts AS sellCounts,
+        ii.url AS imgUrl,
+        temp.price_discount AS price
+        FROM
+        items i
+        LEFT JOIN items_img ii ON i.id = ii.item_id
+        LEFT JOIN (
+        SELECT
+        item_id,
+        MIN(price_discount) AS price_discount
+        FROM
+        items_spec
+        GROUP BY
+        item_id
+        ) temp ON i.id = temp.item_id
+        WHERE
+        ii.is_main = 1
+        <if test="catId != null">
+            AND i.cat_id = #{catId}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="sort == &quot;c&quot;">
+                i.sell_counts desc
+            </when>
+            <when test="sort == &quot;p&quot;">
+                temp.price_discount asc
+            </when>
+            <otherwise>
+                i.item_name asc
+            </otherwise>
+        </choose>
+
+    </select>-->
+
+    <select id="queryItemsBySpecIds" resultType="com.pacee1.item.pojo.vo.ShopcartVO">
+        SELECT
+            i.id AS itemId,
+            ii.url AS itemImgUrl,
+            i.item_name AS itemName,
+            isc.id AS specId,
+            isc.`name` AS specName,
+            isc.price_discount AS priceDiscount,
+            isc.price_normal AS priceNormal
+        FROM
+            items_spec isc
+        LEFT JOIN items i ON isc.item_id = i.id
+        LEFT JOIN items_img ii ON isc.item_id = ii.item_id
+        WHERE
+            ii.is_main = 1
+        AND isc.id IN
+        <foreach collection="specIdsList" index="index" item="spec" open="(" separator="," close=")">
+            #{spec}
+        </foreach>
+    </select>
+
+    <update id="decreaseItemSpecStock">
+        update items_spec
+        set stock = stock - #{pendingCounts}
+        where id = #{specId}
+        and stock >= #{pendingCounts}
+    </update>
+</mapper>

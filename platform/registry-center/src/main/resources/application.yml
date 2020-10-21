@@ -1,0 +1,18 @@
+# 1
+
+spring:
+  application:
+    name: registry-center
+  profiles:
+    active: dev
+
+server:
+  port: 22222
+
+eureka:
+  instance:
+    hostname: localhost
+  # 不注册自己
+  client:
+    register-with-eureka: false
+    fetch-registry: false

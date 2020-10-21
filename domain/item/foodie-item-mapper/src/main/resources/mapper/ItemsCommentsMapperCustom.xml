@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pacee1.item.mapper.ItemsCommentsMapperCustom" >
+
+  <insert id="saveCommentList">
+    insert into
+        items_comments
+        (
+            id,
+            user_id,
+            item_id,
+            item_name,
+            item_spec_id,
+            spec_name,
+            comment_level,
+            content,
+            created_time,
+            updated_time
+        )
+    values
+    <foreach collection="orderItemList" item="item" index="index" separator=",">
+      (
+        #{item.commentId},
+        #{userId},
+        #{item.itemId},
+        #{item.itemName},
+        #{item.itemSpecId},
+        #{item.itemSpecName},
+        #{item.commentLevel},
+        #{item.content},
+        now(),
+        now()
+      )
+    </foreach>
+  </insert>
+
+    <select id="queryCommentList" parameterType="java.lang.String" resultType="com.pacee1.item.pojo.vo.MyCommentVO">
+        SELECT
+            ic.id AS commentId,
+            ic.content AS content,
+            ic.created_time AS createdTime,
+            ic.item_id AS itemId,
+            ic.item_name AS itemName,
+            ic.spec_name AS specName,
+            ii.url AS itemImg
+        FROM
+            items_comments ic
+        LEFT JOIN items_img ii ON ic.item_id = ii.item_id
+        WHERE
+            ic.user_id = #{userId}
+        AND ii.is_main = 1
+        ORDER BY
+            ic.updated_time DESC
+    </select>
+</mapper>
