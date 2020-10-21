@@ -8,8 +8,8 @@
 
 ### 项目功能
 
-![输入图片说明](/foodie-resource/image/151140_08bddc92_1185227.jpeg)
+![输入图片说明](/resource/image/151140_08bddc92_1185227.jpeg)
 
 ### 项目架构
 
-![输入图片说明](/foodie-resource/image/144526_dff4f76c_1185227.jpeg)
+![输入图片说明](/resource/image/144526_dff4f76c_1185227.jpeg)
