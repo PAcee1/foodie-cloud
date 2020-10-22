@@ -132,6 +132,7 @@ public class OrderController {
 
         /**
          * 2.清除购物车中数据
+         * TODO 改造到购物车微服务
          */
         // 从redis获取购物车数据，对商品清除，同步cookie
         shopcartList.removeAll(orderVO.getNeedRemoveList());
