@@ -1,0 +1,14 @@
+server:
+  port: 8088
+spring:
+  datasource: # 数据源的相关配置
+    url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: zhaoyujie
+# 支付相关配置
+pacee1:
+  image:
+    faceLocation: E:\\pic\\foodie-image
+    serverUrl: http://localhost:8088/
+  pay:
+    returnUrl: http://raqpsv.natappfree.cc/orders/notifyMerchantOrderPaid

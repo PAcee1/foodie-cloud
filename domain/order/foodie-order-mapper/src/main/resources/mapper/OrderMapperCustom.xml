@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pacee1.order.mapper.OrderMapperCustom" >
+    <resultMap id="resultMap" type="com.pacee1.order.pojo.vo.MyOrdersVO" >
+        <id column="orderId" property="orderId" />
+        <result column="createdTime" property="createdTime"/>
+        <result column="payMethod" property="payMethod"/>
+        <result column="realPayAmount" property="realPayAmount" />
+        <result column="postAmount" property="postAmount" />
+        <result column="isComment" property="isComment" />
+        <result column="orderStatus" property="orderStatus" />
+        <collection property="subOrderItemList"
+                    select="queryOrderItem"
+                    column="orderId"
+                    ofType="com.pacee1.order.pojo.vo.MySubOrderItemVO">
+            <result column="itemId" property="itemId" />
+            <result column="itemImg" property="itemImg"/>
+            <result column="itemName" property="itemName"/>
+            <result column="itemSpecName" property="itemSpecName" />
+            <result column="buyCounts" property="buyCounts" />
+            <result column="price" property="price" />
+        </collection>
+    </resultMap>
+
+    <select id="queryMyOrderList" parameterType="java.util.Map" resultMap="resultMap">
+        SELECT
+            o.id AS orderId,
+            o.created_time AS createdTime,
+            o.pay_method AS payMethod,
+            o.real_pay_amount AS realPayAmount,
+            o.post_amount AS postAmount,
+            o.is_comment AS isComment,
+            os.order_status AS orderStatus
+        FROM
+            orders o
+        LEFT JOIN order_status os ON o.id = os.order_id
+        WHERE
+            o.user_id = #{userId}
+        AND o.is_delete = 0
+        <if test="orderStatus != null and orderStatus != ''">
+            AND os.order_status = #{orderStatus}
+        </if>
+        ORDER BY
+            o.updated_time DESC
+    </select>
+
+    <select id="queryOrderItem" parameterType="java.lang.String" resultType="com.pacee1.order.pojo.vo.MySubOrderItemVO">
+        SELECT
+            oi.item_id AS itemId,
+            oi.item_img AS itemImg,
+            oi.item_name AS itemName,
+            oi.item_spec_name AS itemSpecName,
+            oi.buy_counts AS buyCounts,
+            oi.price AS price
+        FROM
+            order_items oi
+        WHERE
+            oi.order_id = #{orderId}
+    </select>
+
+    <select id="queryOrderCountByStatus" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+            count(0)
+        FROM
+            order_status os
+        LEFT JOIN orders o ON os.order_id = o.id
+        WHERE
+            o.user_id = #{userId}
+        AND os.order_status = #{orderStatus}
+        AND o.is_delete = 0
+        <if test="isComment != null">
+            and o.is_comment = #{isComment}
+        </if>
+    </select>
+
+    <select id="queryOrderTrend" parameterType="java.lang.String" resultType="com.pacee1.order.pojo.OrderStatus">
+       SELECT
+            os.order_id AS orderId,
+            os.order_status AS orderStatus,
+            os.created_time AS createdTime,
+            os.pay_time AS payTime,
+            os.deliver_time AS deliverTime,
+            os.success_time AS successTime,
+            os.close_time AS closeTime,
+            os.comment_time AS commentTime
+        FROM
+            order_status os
+        LEFT JOIN orders o ON os.order_id = o.id
+        WHERE
+            o.user_id = #{userId}
+        AND os.order_status IN (20, 30, 40)
+        AND o.is_delete = 0
+        ORDER BY  os.created_time desc
+    </select>
+
+</mapper>

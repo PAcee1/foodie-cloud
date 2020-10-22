@@ -1,0 +1,15 @@
+server:
+  port: 10003
+spring:
+  datasource: # 数据源的相关配置
+    url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password:
+# 支付相关配置
+pacee1:
+  image:
+    faceLocation: E:\\pic\\foodie-image
+    serverUrl: http://localhost:8088/
+  pay:
+    returnUrl: http://raqpsv.natappfree.cc/orders/notifyMerchantOrderPaid
+    paymentUrl: http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder

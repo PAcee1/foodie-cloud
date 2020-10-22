@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>foodie-cloud</artifactId>
+        <groupId>com.pacee1</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>foodie-order-service</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>foodie-order-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>foodie-order-mapper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 引入用户服务接口层 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>foodie-user-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 商品服务接口层 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>foodie-item-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 需要调用Item和User服务，所以需要Eureka LoadBalancer进行服务调用
+             TODO 学到Feign后，使用Feign进行调用，改造 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
