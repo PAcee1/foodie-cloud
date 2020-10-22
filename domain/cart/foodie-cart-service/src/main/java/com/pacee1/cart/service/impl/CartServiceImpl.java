@@ -7,6 +7,7 @@ import com.pacee1.utils.JsonUtils;
 import com.pacee1.utils.RedisOperator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  * @author : Pace
  * @date : 2020-10-22 15:36
  **/
+@RestController
 public class CartServiceImpl implements CartService {
 
     @Autowired

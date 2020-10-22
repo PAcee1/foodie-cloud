@@ -1,4 +1,4 @@
-package com.pacee1.cart;
+package com.pacee1.cart.controller;
 
 import com.pacee1.cart.service.CartService;
 import com.pacee1.pojo.ShopcartBO;

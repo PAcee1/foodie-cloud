@@ -32,6 +32,11 @@
         <module>domain/cart/foodie-cart-api</module>
         <module>domain/cart/foodie-cart-service</module>
         <module>domain/cart/foodie-cart-web</module>
+        <module>domain/search/foodie-search-pojo</module>
+        <module>domain/search/foodie-search-mapper</module>
+        <module>domain/search/foodie-search-api</module>
+        <module>domain/search/foodie-search-service</module>
+        <module>domain/search/foodie-search-web</module>
     </modules>
 
     <packaging>pom</packaging>
