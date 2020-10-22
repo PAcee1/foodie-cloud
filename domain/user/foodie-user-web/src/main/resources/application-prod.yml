@@ -5,3 +5,8 @@ spring:
     url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
     username: root
     password: zhaoyujie
+# 照片相关配置
+pacee1:
+  image:
+    faceLocation: /file/image/foodie/faces
+    serverUrl: http://api.enbuys.com:8088/foodie/faces/

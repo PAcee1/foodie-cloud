@@ -17,6 +17,11 @@
         <module>domain/item/foodie-item-api</module>
         <module>domain/item/foodie-item-service</module>
         <module>domain/item/foodie-item-web</module>
+        <module>domain/user/foodie-user-pojo</module>
+        <module>domain/user/foodie-user-mapper</module>
+        <module>domain/user/foodie-user-api</module>
+        <module>domain/user/foodie-user-service</module>
+        <module>domain/user/foodie-user-web</module>
     </modules>
 
     <packaging>pom</packaging>
