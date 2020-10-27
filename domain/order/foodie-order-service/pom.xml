@@ -39,11 +39,12 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- 需要调用Item和User服务，所以需要Eureka LoadBalancer进行服务调用
+        <!-- //需要调用Item和User服务，所以需要Eureka LoadBalancer进行服务调用
+             使用Ribbon实现服务间调用
              TODO 学到Feign后，使用Feign进行调用，改造 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
         </dependency>
     </dependencies>
 

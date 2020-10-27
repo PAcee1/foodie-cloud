@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,9 +50,7 @@ public class MyCommentServiceImpl implements MyCommentService {
     private ItemsCommentsMapperCustom itemsCommentsMapperCustom;*/
 
     // TODO 使用Feign改造
-    @Autowired
-    private LoadBalancerClient client;
-    @Autowired
+    @Resource(name = "RestTemplateLB")
     private RestTemplate restTemplate;
 
     @Override
@@ -77,11 +76,12 @@ public class MyCommentServiceImpl implements MyCommentService {
         paramMap.put("orderItemList",orderItemList);
         //itemsCommentsMapperCustom.saveCommentList(paramMap);
         // 服务间调用 TODO 使用Feign改造
-        ServiceInstance choose = client.choose("FOODIE-ITEM-SERVICE");
+        restTemplate.postForLocation("http://FOODIE-ITEM-SERVICE/item-comments-api/saveComments", paramMap);
+        /*ServiceInstance choose = client.choose("FOODIE-ITEM-SERVICE");
         String target = String.format("http://%s:%s/item-comments-api/saveComments",
                 choose.getHost(),
                 choose.getPort());
-        restTemplate.postForLocation(target,paramMap);
+        restTemplate.postForLocation(target,paramMap);*/
 
         // 2.修改订单状态
         OrderStatus orderStatus = new OrderStatus();

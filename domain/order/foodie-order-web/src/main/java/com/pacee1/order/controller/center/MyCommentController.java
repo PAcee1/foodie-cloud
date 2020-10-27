@@ -17,6 +17,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -35,9 +36,9 @@ public class MyCommentController {
     private MyCommentService myCommentService;
 
     // TODO 使用Feign改造
-    @Autowired
-    private LoadBalancerClient client;
-    @Autowired
+    /*@Autowired
+    private LoadBalancerClient client;*/
+    @Resource(name = "RestTemplateLB")
     private RestTemplate restTemplate;
 
     @PostMapping("/pending")
@@ -111,15 +112,14 @@ public class MyCommentController {
 
         //PagedGridResult result = myCommentService.queryCommentList(userId, page, pageSize);
         // 服务间调用 TODO 使用Feign改造
-        ServiceInstance choose = client.choose("FOODIE-ITEM-SERVICE");
-        String target = String.format("http://%s:%s/item-comments-api/myComments" +
+        //ServiceInstance choose = client.choose("FOODIE-ITEM-SERVICE");
+        String target = String.format("http://FOODIE-ITEM-SERVICE/item-comments-api/myComments" +
                         "?userId=%s&page=%s&pageSize=%s",
-                choose.getHost(),
-                choose.getPort(),
                 userId,
                 page,
                 pageSize);
         PagedGridResult result = restTemplate.getForObject(target, PagedGridResult.class);
+
 
         return ResponseResult.ok(result);
     }
