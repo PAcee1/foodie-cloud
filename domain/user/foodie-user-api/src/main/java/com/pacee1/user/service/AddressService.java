@@ -2,6 +2,7 @@ package com.pacee1.user.service;
 
 import com.pacee1.user.pojo.UserAddress;
 import com.pacee1.user.pojo.bo.UserAddressBO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.List;
  * @Desc
  * @date 2020/5/17 15:16
  */
-@RestController("address-api")
+@FeignClient("foodie-user-service")
+@RequestMapping("address-api")
 public interface AddressService {
 
     /**
@@ -31,11 +33,12 @@ public interface AddressService {
     void edit(@RequestBody UserAddressBO userAddressBO);
 
     @DeleteMapping("address")
-    void delete(@RequestBody String userId, String addressId);
+    void delete(@RequestParam("userId") String userId,
+                @RequestParam("addressId") String addressId);
 
     @PostMapping("setDefaultAddress")
-    void setDefaultAddress(@RequestParam("userId")String userId,
-                           @RequestParam(value = "addressId",required = false)String addressId);
+    void setDefaultAddress(@RequestParam("userId") String userId,
+                           @RequestParam("addressId") String addressId);
 
     @GetMapping("address")
     UserAddress queryById(@RequestParam("addressId") String addressId);

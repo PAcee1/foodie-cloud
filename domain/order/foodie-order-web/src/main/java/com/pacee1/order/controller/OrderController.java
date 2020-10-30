@@ -1,5 +1,6 @@
 package com.pacee1.order.controller;
 
+import com.pacee1.cart.service.CartService;
 import com.pacee1.enums.OrderStatusEnum;
 import com.pacee1.enums.PayMethod;
 import com.pacee1.order.pojo.OrderStatus;
@@ -61,6 +62,8 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private CartService cartService;
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
@@ -132,11 +135,11 @@ public class OrderController {
 
         /**
          * 2.清除购物车中数据
-         * TODO 改造到购物车微服务
          */
         // 从redis获取购物车数据，对商品清除，同步cookie
         shopcartList.removeAll(orderVO.getNeedRemoveList());
-        redisOperator.set("shopcart:" + orderBO.getUserId(), JsonUtils.objectToJson(shopcartList));
+        cartService.clear(orderBO.getUserId(),JsonUtils.objectToJson(shopcartList));
+        //redisOperator.set("shopcart:" + orderBO.getUserId(), JsonUtils.objectToJson(shopcartList));
         // 当前直接重置cookie的购物车
         CookieUtils.setCookie(request,response,"shopcart","",true);
 

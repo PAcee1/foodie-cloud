@@ -1,6 +1,7 @@
 package com.pacee1.order.controller.center;
 
 import com.pacee1.item.pojo.ItemsSpec;
+import com.pacee1.item.service.ItemCommentsService;
 import com.pacee1.order.pojo.OrderItems;
 import com.pacee1.order.pojo.Orders;
 import com.pacee1.order.pojo.bo.center.OrderItemsCommentBO;
@@ -35,11 +36,8 @@ public class MyCommentController {
     @Autowired
     private MyCommentService myCommentService;
 
-    // TODO 使用Feign改造
-    /*@Autowired
-    private LoadBalancerClient client;*/
-    @Resource(name = "RestTemplateLB")
-    private RestTemplate restTemplate;
+    @Autowired
+    private ItemCommentsService itemCommentsService;
 
     @PostMapping("/pending")
     @ApiOperation(value = "查询评价商品",notes = "查询评价商品")
@@ -110,16 +108,7 @@ public class MyCommentController {
             pageSize = 10;
         }
 
-        //PagedGridResult result = myCommentService.queryCommentList(userId, page, pageSize);
-        // 服务间调用 TODO 使用Feign改造
-        //ServiceInstance choose = client.choose("FOODIE-ITEM-SERVICE");
-        String target = String.format("http://FOODIE-ITEM-SERVICE/item-comments-api/myComments" +
-                        "?userId=%s&page=%s&pageSize=%s",
-                userId,
-                page,
-                pageSize);
-        PagedGridResult result = restTemplate.getForObject(target, PagedGridResult.class);
-
+        PagedGridResult result = itemCommentsService.queryMyComments(userId, page, pageSize);
 
         return ResponseResult.ok(result);
     }

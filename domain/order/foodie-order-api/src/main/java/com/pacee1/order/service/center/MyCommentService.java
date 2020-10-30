@@ -3,6 +3,7 @@ package com.pacee1.order.service.center;
 import com.pacee1.order.pojo.OrderItems;
 import com.pacee1.order.pojo.bo.center.OrderItemsCommentBO;
 import com.pacee1.pojo.PagedGridResult;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +15,8 @@ import java.util.List;
  * @Desc
  * @date 2020/5/17 15:16
  */
-@RestController("order-comments-api")
+@FeignClient("foodie-order-service")
+@RequestMapping("order-comments-api")
 public interface MyCommentService {
 
     @GetMapping("pendingComment")

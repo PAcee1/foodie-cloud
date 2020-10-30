@@ -2,6 +2,7 @@ package com.pacee1.user.service;
 
 import com.pacee1.user.pojo.Users;
 import com.pacee1.user.pojo.bo.UserBO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
  * @Desc
  * @date 2020/5/17 15:16
  */
-@RestController("user-api")
+@FeignClient("foodie-user-service")
+@RequestMapping("user-api")
 public interface UserService {
 
     // 判断用户名是否存在

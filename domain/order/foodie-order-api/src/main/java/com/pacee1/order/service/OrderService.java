@@ -5,6 +5,7 @@ import com.pacee1.order.pojo.bo.PlaceOrderBO;
 import com.pacee1.pojo.ShopcartBO;
 import com.pacee1.order.pojo.bo.OrderBO;
 import com.pacee1.order.pojo.vo.OrderVO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +15,8 @@ import java.util.List;
  * @Date 2020/6/8 17:20
  * @Classname ItemService
  */
-@RestController("order-api")
+@FeignClient("foodie-order-service")
+@RequestMapping("order-api")
 public interface OrderService {
 
     @PostMapping("order")

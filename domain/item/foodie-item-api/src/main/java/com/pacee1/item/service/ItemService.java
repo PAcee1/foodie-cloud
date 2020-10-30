@@ -7,6 +7,7 @@ import com.pacee1.item.pojo.ItemsSpec;
 import com.pacee1.item.pojo.vo.CommentLevelCountsVO;
 import com.pacee1.item.pojo.vo.ShopcartVO;
 import com.pacee1.pojo.PagedGridResult;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 // 接口层要对外提供服务，当使用Feign组件时，调用起来更加方便
 @RequestMapping("item-api")
+@FeignClient("foodie-item-service")
 public interface ItemService {
 
     /**

@@ -1,6 +1,7 @@
 package com.pacee1.item.service;
 
 import com.pacee1.pojo.PagedGridResult;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
  * @author : Pace
  * @date : 2020-10-21 15:29
  **/
+@FeignClient("foodie-item-service")
 @RequestMapping("item-comments-api")
 public interface ItemCommentsService {
 

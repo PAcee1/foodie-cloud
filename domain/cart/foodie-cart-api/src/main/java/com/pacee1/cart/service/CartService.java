@@ -1,10 +1,10 @@
 package com.pacee1.cart.service;
 
-import com.pacee1.pojo.ResponseResult;
 import com.pacee1.pojo.ShopcartBO;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p></p>
@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
  * @author : Pace
  * @date : 2020-10-22 15:33
  **/
-@RestController("cart-api")
+@FeignClient("foodie-cart-service")
+@RequestMapping("cart-api")
 public interface CartService {
 
     @PostMapping("/cart")
@@ -22,4 +23,8 @@ public interface CartService {
     @DeleteMapping("/cart")
     void del(@RequestParam("userId") String userId,
                        @RequestParam("itemSpecId") String itemSpecId);
+
+    @DeleteMapping("/clearCart")
+    void clear(@RequestParam("userId") String userId,
+            @RequestParam("jsonShop") String jsonShop);
 }

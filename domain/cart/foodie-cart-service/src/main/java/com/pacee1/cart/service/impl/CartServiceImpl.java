@@ -74,4 +74,10 @@ public class CartServiceImpl implements CartService {
             redisOperator.set("shopcart:"+userId , JsonUtils.objectToJson(shopcartList));
         }
     }
+
+    @Override
+    public void clear(String userId,
+                      String jsonShop) {
+        redisOperator.set("shopcart:" + userId,jsonShop);
+    }
 }

@@ -18,6 +18,9 @@ spring:
   name: foodie-user-service
  profiles:
   active: dev
+ ## 为Feign开启，防止@FeignClient注解重复出现
+ main:
+  allow-bean-definition-overriding: true
  datasource: # 数据源的相关配置
   type: com.zaxxer.hikari.HikariDataSource # 数据源类型：HikariCP
   driver-class-name: com.mysql.jdbc.Driver # mysql驱动

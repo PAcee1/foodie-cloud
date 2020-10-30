@@ -3,6 +3,7 @@ package com.pacee1.order.service.center;
 import com.pacee1.order.pojo.Orders;
 import com.pacee1.order.pojo.vo.OrderStatusCountsVO;
 import com.pacee1.pojo.PagedGridResult;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
  * @Desc
  * @date 2020/5/17 15:16
  */
-@RestController("myorder-api")
+@FeignClient("foodie-order-service")
+@RequestMapping("myorder-api")
 public interface MyOrderService {
 
     /**

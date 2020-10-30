@@ -5,6 +5,7 @@ import com.pacee1.enums.YesOrNo;
 import com.pacee1.item.pojo.Items;
 import com.pacee1.item.pojo.ItemsImg;
 import com.pacee1.item.pojo.ItemsSpec;
+import com.pacee1.item.service.ItemService;
 import com.pacee1.order.mapper.OrderItemsMapper;
 import com.pacee1.order.mapper.OrderStatusMapper;
 import com.pacee1.order.mapper.OrdersMapper;
@@ -18,6 +19,7 @@ import com.pacee1.order.pojo.vo.MerchantOrderVO;
 import com.pacee1.order.pojo.vo.OrderVO;
 import com.pacee1.order.service.OrderService;
 import com.pacee1.user.pojo.UserAddress;
+import com.pacee1.user.service.AddressService;
 import com.pacee1.utils.DateUtil;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,17 +54,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderStatusMapper orderStatusMapper;
 
-    // 不再使用直接注入调用，需要服务间调用
-    /*@Autowired
+    // Feign
+    @Autowired
     private ItemService itemService;
     @Autowired
-    private AddressService addressService;*/
+    private AddressService addressService;
 
-    // TODO 使用Feign改造
-    @Autowired
-    private LoadBalancerClient client;
-    @Autowired
-    private RestTemplate restTemplate;
 
 
     @Override
@@ -83,14 +80,7 @@ public class OrderServiceImpl implements OrderService {
         // 1.创建订单
         Orders newOrder = new Orders();
         // 查询地址信息
-        // UserAddress userAddress = addressService.queryById(addressId);
-        // 服务间调用 TODO 使用Feign改造
-        ServiceInstance choose = client.choose("FOODIE-USER-SERVICE");
-        String target = String.format("http://%s:%s/address-api/address?addressId=%s",
-                choose.getHost(),
-                choose.getPort(),
-                addressId);
-        UserAddress userAddress = restTemplate.getForObject(target, UserAddress.class);
+        UserAddress userAddress = addressService.queryById(addressId);
 
         newOrder.setId(orderId);
         newOrder.setUserId(userId);
@@ -119,34 +109,13 @@ public class OrderServiceImpl implements OrderService {
         String[] itemSpecs = itemSpecIds.split(",");
         for (String itemSpecId : itemSpecs) {
             // 查询规格信息
-            //ItemsSpec itemsSpec = itemService.queryItemsSpec(itemSpecId);
-            // 服务间调用 TODO 使用Feign改造
-            ServiceInstance itemsSpecChoose = client.choose("FOODIE-ITEM-SERVICE");
-            String itemsSpecTarget = String.format("http://%s:%s/item-api/itemSpec?specId=%s",
-                    itemsSpecChoose.getHost(),
-                    itemsSpecChoose.getPort(),
-                    itemSpecId);
-            ItemsSpec itemsSpec = restTemplate.getForObject(itemsSpecTarget, ItemsSpec.class);
+            ItemsSpec itemsSpec = itemService.queryItemsSpec(itemSpecId);
 
             // 查询商品图片信息
-            //ItemsImg itemsImg = itemService.queryItemsImg(itemsSpec.getItemId());
-            // 服务间调用 TODO 使用Feign改造
-            ServiceInstance itemsImgChoose = client.choose("FOODIE-ITEM-SERVICE");
-            String itemsImgTarget = String.format("http://%s:%s/item-api/itemImage?itemId=%s",
-                    itemsImgChoose.getHost(),
-                    itemsImgChoose.getPort(),
-                    itemsSpec.getItemId());
-            ItemsImg itemsImg = restTemplate.getForObject(itemsImgTarget, ItemsImg.class);
+            ItemsImg itemsImg = itemService.queryItemsImg(itemsSpec.getItemId());
 
             // 查询商品信息
-            //Items items = itemService.queryItems(itemsSpec.getItemId());
-            // 服务间调用 TODO 使用Feign改造
-            ServiceInstance itemsChoose = client.choose("FOODIE-ITEM-SERVICE");
-            String itemsTarget = String.format("http://%s:%s/item-api/item?itemId=%s",
-                    itemsChoose.getHost(),
-                    itemsChoose.getPort(),
-                    itemsSpec.getItemId());
-            Items items = restTemplate.getForObject(itemsTarget, Items.class);
+            Items items = itemService.queryItems(itemsSpec.getItemId());
 
             // 从Redis取购物车数据，获取商品数量
             ShopcartBO item = getBuyCountsFromCart(shopcartList,itemSpecId);;
@@ -173,15 +142,7 @@ public class OrderServiceImpl implements OrderService {
             realPayAmount += itemsSpec.getPriceDiscount() * buyCounts;
 
             // 还需要减少库存
-            //itemService.decreaseItemSpecStock(itemSpecId,buyCounts);
-            // 服务间调用 TODO 使用Feign改造
-            ServiceInstance decreaseStockChoose = client.choose("FOODIE-ITEM-SERVICE");
-            String decreaseStock = String.format("http://%s:%s/item-api/decreaseStock?specId=%s&buyCounts=%s",
-                    decreaseStockChoose.getHost(),
-                    decreaseStockChoose.getPort(),
-                    itemSpecId,
-                    buyCounts);
-            restTemplate.getForObject(decreaseStock,null);
+            itemService.decreaseItemSpecStock(itemSpecId,buyCounts);
         }
 
         newOrder.setTotalAmount(totalAmount); // 总价

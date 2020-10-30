@@ -3,6 +3,7 @@ package com.pacee1.order.service.impl.center;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pacee1.enums.YesOrNo;
+import com.pacee1.item.service.ItemCommentsService;
 import com.pacee1.order.mapper.*;
 import com.pacee1.order.pojo.OrderItems;
 import com.pacee1.order.pojo.OrderStatus;
@@ -49,9 +50,13 @@ public class MyCommentServiceImpl implements MyCommentService {
     /*@Autowired
     private ItemsCommentsMapperCustom itemsCommentsMapperCustom;*/
 
-    // TODO 使用Feign改造
-    @Resource(name = "RestTemplateLB")
-    private RestTemplate restTemplate;
+    // Ribbon改造方式
+    /*@Resource(name = "RestTemplateLB")
+    private RestTemplate restTemplate;*/
+
+    // 使用Feign进行服务间调用
+    @Autowired
+    private ItemCommentsService itemCommentsService;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -75,8 +80,10 @@ public class MyCommentServiceImpl implements MyCommentService {
         paramMap.put("userId",userId);
         paramMap.put("orderItemList",orderItemList);
         //itemsCommentsMapperCustom.saveCommentList(paramMap);
-        // 服务间调用 TODO 使用Feign改造
-        restTemplate.postForLocation("http://FOODIE-ITEM-SERVICE/item-comments-api/saveComments", paramMap);
+        // Feign改造
+        itemCommentsService.saveComments(paramMap);
+        // 服务间调用 Ribbon改造方式
+        //restTemplate.postForLocation("http://FOODIE-ITEM-SERVICE/item-comments-api/saveComments", paramMap);
         /*ServiceInstance choose = client.choose("FOODIE-ITEM-SERVICE");
         String target = String.format("http://%s:%s/item-comments-api/saveComments",
                 choose.getHost(),

@@ -1,6 +1,7 @@
 package com.pacee1.search.service;
 
 import com.pacee1.pojo.PagedGridResult;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -9,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
  * @author : Pace
  * @date : 2020-10-22 15:33
  **/
-@RestController("search-api")
+@FeignClient("foodie-search-service")
+@RequestMapping("search-api")
 public interface SearchService {
 
     /**

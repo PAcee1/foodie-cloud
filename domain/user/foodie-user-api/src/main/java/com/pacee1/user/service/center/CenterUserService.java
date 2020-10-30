@@ -2,6 +2,7 @@ package com.pacee1.user.service.center;
 
 import com.pacee1.user.pojo.Users;
 import com.pacee1.user.pojo.bo.center.CenterUserBO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
  * @Desc
  * @date 2020/5/17 15:16
  */
-@RestController("center-user-api")
+@FeignClient("foodie-user-service")
+@RequestMapping("center-user-api")
 public interface CenterUserService {
 
     @GetMapping("userInfo")
