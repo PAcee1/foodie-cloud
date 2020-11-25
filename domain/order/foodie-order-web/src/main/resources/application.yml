@@ -68,12 +68,4 @@ mapper:
 pagehelper:
  helperDialect: mysql
  supportMethodsArguments: true
-### Feign 超时重试策略
-feign:
- client:
-  config:
-   default:
-    OkToRetryOnAllOperations: GET
-    ConnectTimeout: 2000
-    ReadTimeout: 5000
-    MaxAutoRetries: 1
+

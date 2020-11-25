@@ -1,5 +1,7 @@
 package com.pacee1.user.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.pacee1.pojo.ShopcartBO;
 import com.pacee1.user.pojo.Users;
 import com.pacee1.user.pojo.bo.UserBO;
@@ -108,12 +110,35 @@ public class PassportController {
 
     @PostMapping("/login")
     @ApiOperation(value = "用户登录",notes = "用户登录")
+    @HystrixCommand(
+            commandKey = "loginFail", // 全局唯一标识，默认方法名
+            groupKey = "password", // 全局服务分组，仪表盘中使用，默认为类名
+            fallbackMethod = "loginFail", // 降级方法名
+            // 忽略的异常，不会进入降级逻辑
+            //ignoreExceptions = {NullPointerException.class},
+            // 线程有关属性，也可以配置在配置文件
+            threadPoolKey = "threadPoolA", // 线程租
+            threadPoolProperties = {
+                    // 核心线程数
+                    @HystrixProperty(name = "coreSize",value = "20"),
+                    // size > 0 ，LinkedBlockingQueue 请求等待队列
+                    // size = -1,SynchronizeQueue -》 不存储元素的阻塞队列
+                    @HystrixProperty(name = "maxQueueSize",value = "40"),
+                    // maxQueueSize=-1时无效，也是设置队列大小的，两个相互作用，哪个小实验哪个
+                    @HystrixProperty(name = "queueSizeRejectionThreshold",value = "15"),
+                    // 线程统计窗口持续时间
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds",value = "1024"),
+                    // 窗口内的桶数量
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets",value = "18"),
+
+            }
+    )
     public ResponseResult login(@RequestBody UserBO userBO,
                                 HttpServletRequest request,
                                 HttpServletResponse response){
         String username = userBO.getUsername();
         String password = userBO.getPassword();
-
+        //int i = 1/0;
         // 1.校验
         if(StringUtils.isBlank(username) ||
                 StringUtils.isBlank(password)){
@@ -143,6 +168,13 @@ public class PassportController {
         SyncShopcart(user.getId(),request,response);
 
         return ResponseResult.ok(user);
+    }
+
+    private ResponseResult loginFail(@RequestBody UserBO userBO,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    Throwable throwable) throws Exception{
+        return ResponseResult.errorMsg("验证码错误（参考12306）");
     }
 
     @PostMapping("/logout")

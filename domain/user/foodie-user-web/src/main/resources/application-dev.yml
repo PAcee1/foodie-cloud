@@ -10,3 +10,59 @@ pacee1:
   image:
     faceLocation: /file/image/foodie/faces
     serverUrl: http://api.enbuys.com:8088/foodie/faces/
+
+## 开启所有actuator-endpoint
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  security:
+    enabled: false
+
+## hystrix配置
+hystrix:
+  command:
+    # 有的属性是默认值，写不写都行
+    default:
+      fallback:
+        enabled: true
+      circuitBreaker:
+        enabled: true
+        # 超过50%错误，那么开启熔断
+        errorThresholdPercentage: 50
+        # 5个request之后才进行统计
+        requestVolumeThreshold: 5
+        # 10秒之后进入半开状态
+        sleepWindowInMilliseconds: 10000
+        # forceClosed, forceOpen 强制关闭/开启熔断开关
+      # 执行参数
+      execution:
+        timeout:
+          enabled: true
+        # 可以指定隔离方式是线程池还是信号量
+        isolation:
+          thread:
+            interruptOnTimeout: true
+            interruptOnFutureCancel: true
+            timeoutInMilliseconds: 10000
+      metrics:
+        rollingStats:
+          # 时间窗口统计
+          timeInMilliseconds: 20000
+          # numBuckets: 10
+    #        rollingPercentile:
+    #          # 时间窗口统计
+    #          timeInMilliseconds: 20000
+    #          # numBuckets: 10
+    #          bucketSize: 300
+    # 照这个方法，覆盖其他的属性
+    # loginFail是在HystrixCommand中指定的ID
+    loginFail:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000

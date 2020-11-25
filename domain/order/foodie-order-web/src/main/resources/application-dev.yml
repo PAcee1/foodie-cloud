@@ -13,3 +13,61 @@ pacee1:
   pay:
     returnUrl: http://raqpsv.natappfree.cc/orders/notifyMerchantOrderPaid
     paymentUrl: http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder
+### Feign 超时重试策略
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        OkToRetryOnAllOperations: GET
+        ConnectTimeout: 2000
+        ReadTimeout: 5000
+        MaxAutoRetries: 1
+## 开启所有actuator-endpoint
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  security:
+    enabled: false
+## hystrix配置
+hystrix:
+  command:
+    # 有的属性是默认值，写不写都行
+    default:
+      fallback:
+        enabled: true
+      circuitBreaker:
+        enabled: true
+        # 超过50%错误，那么开启熔断
+        errorThresholdPercentage: 50
+        # 5个request之后才进行统计
+        requestVolumeThreshold: 5
+        # 10秒之后进入半开状态
+        sleepWindowInMilliseconds: 10000
+        # forceClosed, forceOpen 强制关闭/开启熔断开关
+      # 执行参数
+      execution:
+        timeout:
+          enabled: true
+        # 可以指定隔离方式是线程池还是信号量
+        isolation:
+          thread:
+            interruptOnTimeout: true
+            interruptOnFutureCancel: true
+            timeoutInMilliseconds: 10000
+      metrics:
+        rollingStats:
+          # 时间窗口统计
+          timeInMilliseconds: 20000
+          # numBuckets: 10
+    #        rollingPercentile:
+    #          # 时间窗口统计
+    #          timeInMilliseconds: 20000
+    #          # numBuckets: 10
+    #          bucketSize: 300

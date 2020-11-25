@@ -1,9 +1,8 @@
 package com.pacee1.order.service.impl.center;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pacee1.enums.YesOrNo;
-import com.pacee1.item.service.ItemCommentsService;
+import com.pacee1.order.fallback.itemservice.ItemCommentsFeignClient;
 import com.pacee1.order.mapper.*;
 import com.pacee1.order.pojo.OrderItems;
 import com.pacee1.order.pojo.OrderStatus;
@@ -13,15 +12,10 @@ import com.pacee1.order.service.center.MyCommentService;
 import com.pacee1.pojo.PagedGridResult;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +50,9 @@ public class MyCommentServiceImpl implements MyCommentService {
 
     // 使用Feign进行服务间调用
     @Autowired
-    private ItemCommentsService itemCommentsService;
+    // 使用Fallback类
+    private ItemCommentsFeignClient itemCommentsService;
+    //private ItemCommentsService itemCommentsService;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)

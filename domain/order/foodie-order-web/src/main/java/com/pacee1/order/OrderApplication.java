@@ -1,5 +1,10 @@
 package com.pacee1.order;
 
+import com.pacee1.cart.service.CartService;
+import com.pacee1.item.service.ItemService;
+import com.pacee1.order.fallback.itemservice.ItemCommentsFeignClient;
+import com.pacee1.user.service.AddressService;
+import com.pacee1.user.service.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -21,11 +26,20 @@ import tk.mybatis.spring.annotation.MapperScan;
 @ComponentScan(basePackages = {"com.pacee1","org.n3r.idworker"})
 @EnableDiscoveryClient
 // 开启Feign，并添加需要扫描的包
-@EnableFeignClients(basePackages = {
+@EnableFeignClients(
+        clients = {
+                ItemCommentsFeignClient.class,
+                ItemService.class,
+                UserService.class,
+                AddressService.class,
+                CartService.class
+        }
+        /*basePackages = {
         "com.pacee1.user.service",
         "com.pacee1.item.service",
         "com.pacee1.cart.service"
-})
+        }*/
+)
 @EnableScheduling // 需要使用定时任务
 public class OrderApplication {
     public static void main(String[] args) {
