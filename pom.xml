@@ -39,6 +39,7 @@
         <module>domain/search/foodie-search-web</module>
         <module>platform/hystrix-turbine</module>
         <module>platform/hystrix-dashboard</module>
+        <module>platform/config-server</module>
     </modules>
 
     <packaging>pom</packaging>

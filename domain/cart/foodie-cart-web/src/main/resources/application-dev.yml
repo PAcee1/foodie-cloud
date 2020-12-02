@@ -2,17 +2,22 @@ server:
   port: 10004
 spring:
   datasource: # 数据源的相关配置
-    url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
-    username: root
-    password:
-## 开启所有actuator-endpoint
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  security:
-    enabled: false
+    # url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    uri: ${db.uri}
+    username: ${db.username}
+    password: ${db.password}
+  redis:
+    host: ${redis.host}
+    database: ${redis.database}
+    password: ${redis.password}
+## 开启所有actuator-endpoint 配置在配置中心
+#management:
+#  endpoint:
+#    health:
+#      show-details: always
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  security:
+#    enabled: false

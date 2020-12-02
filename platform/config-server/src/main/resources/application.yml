@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/PAcee1/foodie-cloud-config.git
+          # 强制拉取
+          force-pull: true
+#          username:
+#          password:
+          search-paths: '{application}' # 配置拉取某个目录下，通过服务名称对应
+server:
+  port: 20003
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:22222/eureka

@@ -37,9 +37,9 @@ spring:
    max-lifetime: 1800000 # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟
    connection-test-query: SELECT 1
  redis:
-  host: 120.78.80.109
+  host: localhost
   database: 1
-  password: zhaoyujie
+  password:
  servlet:
   multipart:
    max-file-size: 512000 # 500kb

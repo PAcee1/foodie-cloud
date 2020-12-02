@@ -3,3 +3,59 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:22222/eureka
+# config
+spring:
+  cloud:
+    config:
+      # 不需要填写name，因为会根据我们的服务名称拉取
+      #name: config-consumer
+      #uri: http://localhost:60000
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+      # profile 一般是由动态配置的，比如在获取当前机器的系统环境变量
+      profile: dev
+      label: master
+## hystrix配置
+hystrix:
+  command:
+    # 有的属性是默认值，写不写都行
+    default:
+      fallback:
+        enabled: true
+      circuitBreaker:
+        enabled: true
+        # 超过50%错误，那么开启熔断
+        errorThresholdPercentage: 50
+        # 5个request之后才进行统计
+        requestVolumeThreshold: 5
+        # 10秒之后进入半开状态
+        sleepWindowInMilliseconds: 10000
+        # forceClosed, forceOpen 强制关闭/开启熔断开关
+      # 执行参数
+      execution:
+        timeout:
+          enabled: true
+        # 可以指定隔离方式是线程池还是信号量
+        isolation:
+          thread:
+            interruptOnTimeout: true
+            interruptOnFutureCancel: true
+            timeoutInMilliseconds: 10000
+      metrics:
+        rollingStats:
+          # 时间窗口统计
+          timeInMilliseconds: 20000
+          # numBuckets: 10
+    #        rollingPercentile:
+    #          # 时间窗口统计
+    #          timeInMilliseconds: 20000
+    #          # numBuckets: 10
+    #          bucketSize: 300
+    # 照这个方法，覆盖其他的属性
+    # loginFail是在HystrixCommand中指定的ID
+    loginFail:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000

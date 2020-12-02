@@ -1,11 +1,16 @@
 server:
   port: 10005
 spring:
+  datasource: # 数据源的相关配置
+    # url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    uri: ${db.uri}
+    username: ${db.username}
+    password: ${db.password}
+  redis:
+    host: ${redis.host}
+    database: ${redis.database}
+    password: ${redis.password}
   data:
     elasticsearch:
-      cluster-nodes: 127.0.0.1:9300
-      cluster-name: es
-  datasource: # 数据源的相关配置
-    url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
-    username: root
-    password:
+      cluster-nodes: ${es.cluster-nodes}
+      cluster-name: ${es.cluster-name}
