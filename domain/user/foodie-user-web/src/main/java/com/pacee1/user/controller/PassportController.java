@@ -2,6 +2,10 @@ package com.pacee1.user.controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.pacee1.auth.service.AuthService;
+import com.pacee1.auth.service.pojo.Account;
+import com.pacee1.auth.service.pojo.AuthCode;
+import com.pacee1.auth.service.pojo.AuthResponse;
 import com.pacee1.pojo.ShopcartBO;
 import com.pacee1.user.pojo.Users;
 import com.pacee1.user.pojo.bo.UserBO;
@@ -13,6 +17,7 @@ import com.pacee1.utils.RedisOperator;
 import com.pacee1.pojo.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,12 +40,19 @@ import java.util.UUID;
 @RestController
 @RequestMapping("passport")
 @Api(value = "登录注册接口",tags = "用户登录注册的接口")
+@Slf4j
 public class PassportController {
 
     @Autowired
     private UserService userService;
     @Autowired
     private RedisOperator redisOperator;
+    @Autowired
+    private AuthService authService;
+
+    private static final String AUTH_HEADER = "Authorization";
+    private static final String REFRESH_TOKEN_HEADER = "refresh-token";
+    private static final String UID_HEADER = "foodie-user-id";
 
     @GetMapping("/usernameIsExist")
     @ApiOperation(value = "用户名校验是否存在",notes = "用户名校验是否存在")
@@ -150,6 +163,16 @@ public class PassportController {
         if(user == null){
             return  ResponseResult.errorMsg("用户名或密码错误");
         }
+
+        // 创建令牌
+        AuthResponse token = authService.tokenize(user.getId());
+        if(!AuthCode.SUCCESS.getCode().equals(token.getCode())){
+            log.error("Token error - uid={}",user.getId());
+            return ResponseResult.errorMsg("Token error");
+        }
+        // 将Token添加到Header
+        addAuth2Header(response,token.getAccount());
+
         // 首先清空用户敏感信息
         user = setUserNull(user);
 
@@ -182,6 +205,17 @@ public class PassportController {
     public ResponseResult logout(@RequestParam String userId,
                                 HttpServletRequest request,
                                 HttpServletResponse response){
+        // 清除Header
+        Account account = Account.builder()
+                .token(request.getHeader(AUTH_HEADER))
+                .userId(userId)
+                .refreshToken(request.getHeader(REFRESH_TOKEN_HEADER))
+                .build();
+        AuthResponse authResponse = authService.delete(account);
+        if(!AuthCode.SUCCESS.getCode().equals(authResponse.getCode())){
+            log.error("Token error - uid={}",userId);
+            return ResponseResult.errorMsg("Token error");
+        }
 
         // 1.清除cookie
         CookieUtils.deleteCookie(request,response,"user");
@@ -270,5 +304,19 @@ public class PassportController {
         user.setEmail(null);
         user.setUpdatedTime(null);
         return user;
+    }
+
+    // TODO 修改前端js代码
+    // 在前端页面里拿到Authorization, refresh-token和foodie-user-id。
+    // 前端每次请求服务，都把这几个参数带上
+    private void addAuth2Header(HttpServletResponse response, Account token) {
+        response.setHeader(AUTH_HEADER, token.getToken());
+        response.setHeader(REFRESH_TOKEN_HEADER, token.getRefreshToken());
+        response.setHeader(UID_HEADER, token.getUserId());
+
+        // 让前端感知到，过期时间一天，这样可以在临近过期的时候refresh token
+        Calendar expTime = Calendar.getInstance();
+        expTime.add(Calendar.DAY_OF_MONTH, 1);
+        response.setHeader("token-exp-time", expTime.getTimeInMillis() + "");
     }
 }

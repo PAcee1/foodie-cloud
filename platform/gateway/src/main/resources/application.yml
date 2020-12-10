@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: platform-gateway
+  redis:
+    host: 120.78.80.109
+    database: 1
+    password: zhaoyujie
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            # 返回的资源共享给请求来源
+            allowed-origins:
+              - "http://localhost:8080"
+              - "http://www.enbuys.com:8080"
+              - "http://www.enbuys.com"
+              - "http://center.enbuys.com:8080"
+              - "http://center.enbuys.com"
+              - "*"
+            # 运行携带比如cookie, authorization之类的认证信息
+            allow-credentials: true
+            allowed-headers: "*"
+            allowed-methods: "*"
+            expose-headers: "*"
+            # 表示Options可以在浏览器缓存多长时间，秒
+            max-age: 600
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+#      routes:  在java代码中配置
+server:
+  port: 20004
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:22222/eureka
+management:
+  security:
+    enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

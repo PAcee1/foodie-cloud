@@ -7,9 +7,10 @@ spring:
     username: ${db.username}
     password: ${db.password}
   redis:
-    host: ${redis.host}
-    database: ${redis.database}
-    password: ${redis.password}
+    database: 1
+    host: 120.78.80.109
+    port: 6379
+    password: zhaoyujie
 # 照片相关配置 ，全部配置到了配置中心，所以不需要配置
 #pacee1:
 #  image:

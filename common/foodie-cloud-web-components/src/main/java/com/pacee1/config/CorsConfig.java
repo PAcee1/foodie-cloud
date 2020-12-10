@@ -13,7 +13,8 @@ import org.springframework.web.filter.CorsFilter;
  * @Desc
  * @date 2020/5/17 17:56
  */
-@Configuration
+// 不需要了，我们在网关层就完成了跨域
+//@Configuration
 public class CorsConfig {
 
     public CorsConfig(){}
