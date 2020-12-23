@@ -7,6 +7,17 @@ spring:
     password: zhaoyujie
   main:
     allow-bean-definition-overriding: true
+  zipkin:
+    base-url: http://ZIPKIN-SERVER/
+    discovery-client-enabled: true
+    locator:
+      discovery:
+        enabled: true
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
   cloud:
     gateway:
       globalcors:

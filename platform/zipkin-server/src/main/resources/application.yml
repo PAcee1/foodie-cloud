@@ -1,0 +1,18 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: zipkin-server
+
+server:
+  port: 20005
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:22222/eureka
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: false

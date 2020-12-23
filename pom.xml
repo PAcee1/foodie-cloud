@@ -43,6 +43,7 @@
         <module>platform/gateway</module>
         <module>domain/auth/foodie-auth-api</module>
         <module>domain/auth/foodie-auth-service</module>
+        <module>platform/zipkin-server</module>
     </modules>
 
     <packaging>pom</packaging>

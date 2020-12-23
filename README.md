@@ -15,3 +15,16 @@
 ### 项目架构
 
 ![输入图片说明](/resource/image/144526_dff4f76c_1185227.jpeg)
+
+### 服务
+
+| **组件名称** | **application name** | **端口** |
+| ------------ | -------------------- | -------- |
+| 注册中心     | registry-center      | 22222    |
+| 配置中心     | config-server        | 20003    |
+| 服务网关     | platform-gateway     | 20004    |
+| Hystrix大盘  | hystrix-dashboard    | 20002    |
+| Turbine      | hystrix-turbine      | 20001    |
+|              |                      |          |
+|              |                      |          |
+

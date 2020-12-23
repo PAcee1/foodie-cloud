@@ -9,7 +9,17 @@ spring:
     host: 120.78.80.109
     port: 6379
     password: zhaoyujie
-
+  zipkin:
+    base-url: http://ZIPKIN-SERVER/
+    discovery-client-enabled: true
+    locator:
+      discovery:
+        enabled: true
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
 eureka:
   client:
     serviceUrl:
